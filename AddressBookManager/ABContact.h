@@ -26,7 +26,7 @@ typedef enum{
 @property (nonatomic, retain) NSString *name;
 @property (nonatomic, retain) NSString *middleName;
 @property (nonatomic, retain) NSString *lastName;
-@property (nonatomic, retain) NSArray *emails;
+@property (nonatomic, retain) NSArray<NSString*> *emails;
 @property (nonatomic, retain) NSArray *emailsLabels;
 @property (nonatomic, retain) NSDate *birthday;
 @property (nonatomic, retain) NSString *department;

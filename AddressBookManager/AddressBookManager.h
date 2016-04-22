@@ -89,12 +89,12 @@ typedef enum{
 /**
  * Returns the contact list, must call 'refreshContacts' or 'retrieveContactsWithDelegate' first.
  */
-- (NSArray*) contacts;
+- (NSArray<ABContact*>*) contacts;
 
 /**
  * Returns the contact list filtered by query, must call 'refreshContacts' or 'retrieveContactsWithDelegate' first.
  */
-- (NSArray*) contactsWithQuery: (NSString*) query;
+- (NSArray<ABContact*>*) contactsWithQuery: (NSString*) query;
 
 /**
  * Returns the contact that matches the phone number, must call 'refreshContacts' or 'retrieveContactsWithDelegate' first.

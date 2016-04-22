@@ -30,8 +30,7 @@
 }
 
 - (id)initWithItemsProcessed:(NSNumber*)itemsProc itemsTotal:(NSNumber*)itemsTot andLabel:(NSString*)str{
-	if (self = [super init])
-	{
+	if ((self = [super init])) {
 		self.itemsProcessed = itemsProc;
 		self.itemsTotal = itemsTot;
 		self.label = str;

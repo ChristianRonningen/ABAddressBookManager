@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "623BB7735A51652EECC0608B695ED905F221ECBB",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "623BB7735A51652EECC0608B695ED905F221ECBB" : 0,
+    "AD3352B807396E2689139D4FFFF67ABA17C44308" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "5E39A38B-FBCE-454C-BF76-12B0A7A412D0",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "623BB7735A51652EECC0608B695ED905F221ECBB" : "ABAddressBookManager\/",
+    "AD3352B807396E2689139D4FFFF67ABA17C44308" : ".."
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "AddressBookManagerTest",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "AddressBookManagerTest.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:ChristianRonningen\/ABAddressBookManager.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "623BB7735A51652EECC0608B695ED905F221ECBB"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:ztory\/ztory-ios.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "AD3352B807396E2689139D4FFFF67ABA17C44308"
+    }
+  ]
+}

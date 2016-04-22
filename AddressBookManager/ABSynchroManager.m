@@ -103,7 +103,7 @@
         //Create metadata of the contact
         metadata = [[NSMutableDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInt:contact.contactId],kContactIdKey,
                     contact.modificationDate, kModificationDateKey, nil];
-        [_currentMetadatas addObject:metadata]; //filling metadataList
+        [self.currentMetadatas addObject:metadata]; //filling metadataList
     }
 	else if(contact && metadata) { //Existing one, checking modifications
         NSDate *savedDate = [metadata objectForKey:kModificationDateKey];
@@ -114,9 +114,9 @@
             //Setting a new metadata
             metadata = [[NSMutableDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInt:contact.contactId],kContactIdKey,
                         contact.modificationDate, kModificationDateKey, nil];
-            [_currentMetadatas addObject:metadata]; //filling metadataList
+            [self.currentMetadatas addObject:metadata]; //filling metadataList
         }else {
-            [_currentMetadatas addObject:metadata]; //filling metadataList
+            [self.currentMetadatas addObject:metadata]; //filling metadataList
         }
         
     }

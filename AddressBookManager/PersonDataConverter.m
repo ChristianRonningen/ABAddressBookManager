@@ -72,7 +72,7 @@
         for (NSDictionary *address in theContact.address) {
             NSString *theLabel = [theContact.addressLabels objectAtIndex:i];
             
-            NSArray *keys = [NSArray arrayWithObjects:(NSString*)kABPersonAddressStreetKey,(NSString*)kABPersonAddressCityKey,(NSString*)kABPersonAddressStateKey,(NSString*)kABPersonAddressZIPKey,(NSString*)kABPersonAddressCountryKey,(NSString*)kABPersonAddressCountryCodeKey,nil];
+            NSArray *keys = [NSArray arrayWithObjects:(const NSString*)kABPersonAddressStreetKey,(const NSString*)kABPersonAddressCityKey,(const NSString*)kABPersonAddressStateKey,(const NSString*)kABPersonAddressZIPKey,(const NSString*)kABPersonAddressCountryKey,(const NSString*)kABPersonAddressCountryCodeKey,nil];
             
             for (NSString *key in keys) {
                 [self setPersonProperty:thePerson
@@ -138,11 +138,11 @@
 - (void)setBirthday:(ABRecordRef)person
               value:(CFDateRef)value{
     if (value == nil){
-        if (!ABRecordRemoveValue(person, kABPersonBirthdayProperty, error)){
+        if (!ABRecordRemoveValue(person, kABPersonBirthdayProperty, self.error)){
             NSLog(@"[WARNING] Error removing birthday property");
         }
     }else{
-        if (!ABRecordSetValue(person, kABPersonBirthdayProperty, value, error)) {
+        if (!ABRecordSetValue(person, kABPersonBirthdayProperty, value, self.error)) {
             NSLog(@"[WARNING] Error setting birthday property");
         }
     }
@@ -187,7 +187,7 @@
     for (index = 0; index < total; index++){
         aLabel = ABMultiValueCopyLabelAtIndex(realValue, index);
         if (aLabel){
-            if (CFStringCompare(aLabel, label, 0) == 0){
+            if (CFStringCompare(aLabel, label, (CFStringCompareFlags)0) == 0){
                 CFRelease(aLabel);
                 aLabel = nil;
                 break;
@@ -246,7 +246,7 @@
     for (index = 0; index < total; index++){
         aLabel = ABMultiValueCopyLabelAtIndex(realValue, index);
         if (aLabel){
-            if (CFStringCompare(aLabel, label, 0) == 0){
+            if (CFStringCompare(aLabel, label, (CFStringCompareFlags)0) == 0){
                 CFDictionaryRef tempdict = (CFDictionaryRef)ABMultiValueCopyValueAtIndex(realValue,index);
                 if (!tempdict) {
                     CFRelease(aLabel);
@@ -387,11 +387,11 @@
     }
     
     if (realValue == nil){
-        if (!ABRecordRemoveValue(person, property, error)){
+        if (!ABRecordRemoveValue(person, property, self.error)){
             NSLog(@"[WARNING] Error removing property");
         }
     }else{        
-        if (!ABRecordSetValue(person, property, realValue, error)) {
+        if (!ABRecordSetValue(person, property, realValue, self.error)) {
             NSLog(@"[WARNING] Error setting property");
         }
     }

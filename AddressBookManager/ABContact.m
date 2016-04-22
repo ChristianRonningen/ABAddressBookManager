@@ -11,7 +11,7 @@
 @implementation NSString (ABM)
 
 - (BOOL)contains: (NSString*) another{
-	return [self contains:another options:0];
+	return [self contains:another options:(NSStringCompareOptions)0];
 }
 
 - (BOOL)contains: (NSString*) another options: (NSStringCompareOptions) options{
@@ -64,10 +64,10 @@
 
 - (NSString*)sortingName{
 	NSString *sortingName = [self fullName];
-	if(self.sortOrder == ABContactLocaleNameSurname && [sortingName contains: self.name options:NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch]){
+	if(self.sortOrder == ABContactLocaleNameSurname && [sortingName contains: self.name options:(NSStringCompareOptions)(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch)]){
 		sortingName = self.name;
 	}
-	else if(self.sortOrder == ABContactLocaleSurnameName && [sortingName contains: self.lastName options:NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch]){
+	else if(self.sortOrder == ABContactLocaleSurnameName && [sortingName contains: self.lastName options:(NSStringCompareOptions)(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch)]){
 		sortingName = self.lastName;
 	}
 	return sortingName;
@@ -76,11 +76,14 @@
 - (NSString*)indexCharacter{
 	
 	NSString *index = [[self.sortingName substringToIndex:1] capitalizedString];
-	index = [[NSString alloc] initWithData:[index dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES] encoding:NSASCIIStringEncoding];
-	if((([index compare:@"Z"] != NSOrderedDescending) && ([index compare:@"A"] != NSOrderedAscending)) ||
-	   (([index compare:@"z"] != NSOrderedDescending) && ([index compare:@"a"] != NSOrderedAscending))){
-		return index;
-	}
+    NSData *_Nullable data = [index dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+    if(data){
+        index = [[NSString alloc] initWithData:(NSData*)data encoding:NSASCIIStringEncoding];
+        if((([index compare:@"Z"] != NSOrderedDescending) && ([index compare:@"A"] != NSOrderedAscending)) ||
+           (([index compare:@"z"] != NSOrderedDescending) && ([index compare:@"a"] != NSOrderedAscending))){
+            return index;
+        }
+    }
 	return @"#";
 }
 

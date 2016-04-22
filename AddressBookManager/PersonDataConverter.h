@@ -11,9 +11,9 @@
 
 @class ABContact;
 
-@interface PersonDataConverter : NSObject{
-    CFErrorRef * error;
-}
+@interface PersonDataConverter : NSObject
+
+@property (nonatomic) CFErrorRef* error;
 
 - (void)convertContact:(ABContact*)theContact toPerson:(ABRecordRef)thePerson;
 

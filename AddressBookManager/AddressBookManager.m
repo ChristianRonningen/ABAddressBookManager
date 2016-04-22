@@ -38,18 +38,20 @@
 @end
 
 @interface AddressBookManager (){
-    BOOL ios6AdbPermission;
-	BOOL loadingContacts;
-	ABPersonSortOrdering mSortOrdering;
-	ABPersonCompositeNameFormat mCompositeNameFormat;
-	
-	ABAddressBookRef mShowContactAddressBook;
+    
 }
 /*
  *  Current contacts list readed.
  */
 @property (atomic, strong) NSArray *mContacts;
 @property (atomic, strong) NSDictionary *mContactsByPhone;
+
+@property (nonatomic,assign) BOOL ios6AdbPermission;
+@property (nonatomic,assign) BOOL loadingContacts;
+@property (nonatomic,assign) ABPersonSortOrdering mSortOrdering;
+@property (nonatomic,assign) ABPersonCompositeNameFormat mCompositeNameFormat;
+@property (nonatomic,assign) ABAddressBookRef mShowContactAddressBook;
+
 
 @end
 
@@ -61,11 +63,11 @@
 - (id)init{
     self = [super init];
     if (self) {
-		mSortOrdering = ABPersonGetSortOrdering();
-		mCompositeNameFormat = ABPersonGetCompositeNameFormat();
+		self.mSortOrdering = ABPersonGetSortOrdering();
+		self.mCompositeNameFormat = ABPersonGetCompositeNameFormat();
         _readPhotos = NO;
 		_contactsFilter = AddessBookManagerFilterAllContacts;
-        ios6AdbPermission = YES;
+        self.ios6AdbPermission = YES;
     }
     return self;
 }
@@ -139,8 +141,8 @@
 		self.delegat = aDelegate;
 		
 		@synchronized(self){
-			if(loadingContacts) return;
-			loadingContacts = YES;
+			if(self.loadingContacts) return;
+			self.loadingContacts = YES;
 		}
 		
 		[NSThread detachNewThreadSelector:@selector(initContacts) toTarget:self withObject:nil];
@@ -149,14 +151,14 @@
 
 - (void)refreshContacts{
 	@synchronized(self){
-		if(loadingContacts) return;
-		loadingContacts = YES;
+		if(self.loadingContacts) return;
+		self.loadingContacts = YES;
 	}
 	[NSThread detachNewThreadSelector:@selector(initContacts) toTarget:self withObject:nil];
 }
 
 - (BOOL)hasContactAccessPermission{
-    return ios6AdbPermission;
+    return self.ios6AdbPermission;
 }
 
 #pragma mark > Contacts array handling
@@ -165,11 +167,11 @@
 	return self.mContacts != nil;
 }
 
-- (NSArray*)contacts{
+- (NSArray<ABContact*>*)contacts{
 	return self.mContacts;
 }
 
-- (NSArray*) contactsWithQuery: (NSString*) query{
+- (NSArray<ABContact*>*) contactsWithQuery: (NSString*) query{
 	NSMutableArray *result = [[NSMutableArray alloc] init];
 	
 	NSArray *queryStrings = [query componentsSeparatedByString:@" "];
@@ -199,11 +201,11 @@
 }
 
 - (BOOL)isOrderByLastName{
-	return mSortOrdering == kABPersonSortByLastName;
+	return self.mSortOrdering == kABPersonSortByLastName;
 }
 
 - (BOOL)isShowByLastName{
-	return mCompositeNameFormat == kABPersonCompositeNameFormatLastNameFirst;
+	return self.mCompositeNameFormat == kABPersonCompositeNameFormatLastNameFirst;
 }
 
 #pragma mark > ABAddressBook modifications
@@ -416,9 +418,10 @@
         ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error) {
             // callback can occur in background, address book must be accessed on thread it was created on
             dispatch_async(currentQueue, ^{
+                __strong typeof(weakSelf) stronSelf = weakSelf;
                 if(error || !granted){
 					CFRelease(addressBook);
-                    ios6AdbPermission = NO;
+                    stronSelf.ios6AdbPermission = NO;
                     //Just call the delegate
                     [weakSelf performSelectorOnMainThread:@selector(contactsPermissionDenied) withObject:nil waitUntilDone:NO];
                 }
@@ -448,15 +451,15 @@
 	NSMutableDictionary *theContactsByPhone = [[NSMutableDictionary alloc] initWithCapacity:CFArrayGetCount(people)];
     
 	// Update composite name format & sort ordering
-	mCompositeNameFormat = ABPersonGetCompositeNameFormat();
-	mSortOrdering = ABPersonGetSortOrdering();
+	self.mCompositeNameFormat = ABPersonGetCompositeNameFormat();
+	self.mSortOrdering = ABPersonGetSortOrdering();
 	
 	// Copy contacts to mutable array
 	CFMutableArrayRef peopleMutable = CFArrayCreateMutableCopy(kCFAllocatorDefault, CFArrayGetCount(people), people);
 	
 	// Order contacts in the way the user want
 	CFRange fullRange = CFRangeMake(0, CFArrayGetCount(peopleMutable));
-	CFArraySortValues(peopleMutable, fullRange, (CFComparatorFunction) ABPersonComparePeopleByName, (void*)(NSUInteger)mSortOrdering);
+	CFArraySortValues(peopleMutable, fullRange, (CFComparatorFunction) ABPersonComparePeopleByName, (void*)(NSUInteger)self.mSortOrdering);
 	CFRelease(people);
 	
 	NSNumber *itemsTotal = [NSNumber numberWithInteger:CFArrayGetCount(peopleMutable)];
@@ -474,8 +477,8 @@
 		[contactsSet addObject:(__bridge id)(person)];
 		
 		ABContact *contact = [[ABContact alloc] init];
-		contact.sortOrder = (ABContactLocale)mSortOrdering;
-        [ABContactDataConverter copyPropertiesOfPerson:person toABContact:contact readPhotos:_readPhotos];
+		contact.sortOrder = (ABContactLocale)self.mSortOrdering;
+        [ABContactDataConverter copyPropertiesOfPerson:person toABContact:contact readPhotos:self.readPhotos];
 		
 		//Merging all linked contacts into same ABContact
 		CFArrayRef linkedRef = ABPersonCopyArrayOfAllLinkedPeople(person);
@@ -520,7 +523,7 @@
 	self.mContactsByPhone = theContactsByPhone;
 	
 	@synchronized(self){
-		loadingContacts = NO;
+		self.loadingContacts = NO;
 	}
 	
 	[self performSelectorOnMainThread:@selector(contactsLoaded) withObject:nil waitUntilDone:NO];
@@ -529,21 +532,21 @@
 #pragma mark > AddressBookManagerDelegate calls
 
 - (void)updateProgress:(ProgressData*)progress{
-	if (_delegat && [_delegat respondsToSelector:@selector(updateProgress:)])
-        [_delegat updateProgress:progress];
+	if (self.delegat && [self.delegat respondsToSelector:@selector(updateProgress:)])
+        [self.delegat updateProgress:progress];
 }
 
 - (void)contactsLoaded{
-	if (_delegat && [_delegat respondsToSelector:@selector(contactsLoaded)])
-        [_delegat contactsLoaded];
+	if (self.delegat && [self.delegat respondsToSelector:@selector(contactsLoaded)])
+        [self.delegat contactsLoaded];
 	else{
 		[[NSNotificationCenter defaultCenter] postNotificationName:kNotificationAddressBookManagerUpdated object:nil];
 	}
 }
 
 - (void) contactsPermissionDenied{
-    if (_delegat && [_delegat respondsToSelector:@selector(contactsPermissionDenied)]){
-        [_delegat contactsPermissionDenied];
+    if (self.delegat && [self.delegat respondsToSelector:@selector(contactsPermissionDenied)]){
+        [self.delegat contactsPermissionDenied];
     }
 	else{
 		[[NSNotificationCenter defaultCenter] postNotificationName:kNotificationAddressBookManagerNoPermission object:nil];
